@@ -34,6 +34,7 @@ public class BeerOrderLineMapperExtended implements BeerOrderLineMapper {
                             .ifPresent(beerDto -> {
                                 dto.setBeerName(beerDto.getBeerName());
                                 dto.setBeerStyle(beerDto.getBeerStyle());
+                                dto.setBeerId(beerDto.getId());
                             });
                 });
 
