@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Objects;
+
+import java.util.Optional;
+
 @Component
 @ConfigurationProperties(prefix = "mssc.brewery", ignoreUnknownFields = false)
 public class BeerServiceImpl implements BeerService {
@@ -27,21 +29,11 @@ public class BeerServiceImpl implements BeerService {
     public BeerServiceImpl(RestTemplateBuilder templateBuilder) {
         this.restTemplate = templateBuilder.build();
     }
-
-
+    
     @Override
-    public String getBeerNameByUpc(String upc) {
-        return Objects.requireNonNull(getBeerDto(upc).getBody()).getBeerName();
-
+    public Optional<BeerDto> getBeerDtoByUpc(String upc) {
+        return restTemplate.exchange(beerHost + PATH, HttpMethod.GET, null, new ParameterizedTypeReference<Optional<BeerDto>>() {
+        }, (Object) upc).getBody();
     }
 
-    @Override
-    public String getBeerStyleByUpc(String upc) {
-        return Objects.requireNonNull(getBeerDto(upc).getBody()).getBeerStyle();
-    }
-
-
-    private ResponseEntity<BeerDto> getBeerDto(String upc){
-        return restTemplate.exchange(beerHost+PATH, HttpMethod.GET, null, new ParameterizedTypeReference<BeerDto>(){},(Object) upc);
-    }
 }

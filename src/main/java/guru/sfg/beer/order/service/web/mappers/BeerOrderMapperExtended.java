@@ -29,11 +29,12 @@ public class BeerOrderMapperExtended implements BeerOrderMapper{
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
-        System.out.println("upc : " + upc);
+        beerService.getBeerDtoByUpc(upc)
+                .ifPresent(o->{
+                    dto.setBeerName(o.getBeerName());
+                    dto.setBeerStyle(o.getBeerStyle());
+                });
 
-
-        dto.setBeerName(beerService.getBeerNameByUpc(upc));
-        dto.setBeerStyle(beerService.getBeerStyleByUpc(upc));
         return dto;
     }
 
