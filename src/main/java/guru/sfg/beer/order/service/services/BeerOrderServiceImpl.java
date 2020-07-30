@@ -56,7 +56,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
                     List<BeerOrderDto> beerOrders =
                             beerOrderRepository.findAllByCustomer(customer, pageable)
                                     .stream()
-                                    .map(beerOrderMapper::beerOrderToDtoExtended)
+                                    .map(beerOrderMapper::beerOrderToDto)
                                     .collect(Collectors.toList());
 
                     return new BeerOrderPagedList(beerOrders,
@@ -94,7 +94,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
     @Override
     public BeerOrderDto getOrderById(UUID customerId, UUID orderId) {
-        return beerOrderMapper.beerOrderToDtoExtended(getOrder(customerId, orderId));
+        return beerOrderMapper.beerOrderToDto(getOrder(customerId, orderId));
     }
 
     @Override
