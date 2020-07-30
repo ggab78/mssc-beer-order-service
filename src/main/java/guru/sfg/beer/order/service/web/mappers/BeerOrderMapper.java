@@ -18,11 +18,12 @@
 package guru.sfg.beer.order.service.web.mappers;
 
 import guru.sfg.beer.order.service.domain.BeerOrder;
+import guru.sfg.beer.order.service.domain.Customer;
 import guru.sfg.beer.order.service.web.model.BeerOrderDto;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 
-@Mapper(uses = {DateMapper.class, BeerOrderLineMapper.class})
+@Mapper(uses = {DateMapper.class, BeerOrderLineMapper.class, CustomerMapper.class})
 
 @DecoratedWith(BeerOrderMapperExtended.class)
 public interface BeerOrderMapper {
