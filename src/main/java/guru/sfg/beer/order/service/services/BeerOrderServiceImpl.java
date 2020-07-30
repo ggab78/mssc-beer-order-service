@@ -56,7 +56,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
                     List<BeerOrderDto> beerOrders =
                             beerOrderRepository.findAllByCustomer(customer, pageable)
                                     .stream()
-                                    .map(beerOrderMapper::beerOrderToDto)
+                                    .map(beerOrderMapper::beerOrderToDtoExtended)
                                     .collect(Collectors.toList());
 
                     return new BeerOrderPagedList(beerOrders,
@@ -73,13 +73,16 @@ public class BeerOrderServiceImpl implements BeerOrderService {
     @Override
     public BeerOrderDto placeOrder(UUID customerId, BeerOrderDto beerOrderDto) {
 
+
         return customerRepository.findById(customerId)
                 .map(customer -> {
                     BeerOrder beerOrder = beerOrderMapper.dtoToBeerOrder(beerOrderDto);
                     beerOrder.setId(null); //should not be set by outside client
                     beerOrder.setCustomer(customer);
                     beerOrder.setOrderStatus(OrderStatusEnum.NEW);
-                    beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
+                    beerOrder.getBeerOrderLines().forEach(line -> {
+                        System.out.println("line upc : "+line.getUpc());
+                        line.setBeerOrder(beerOrder);});
                     BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
                     log.debug("Saved Beer Order: " + savedBeerOrder.getId());
 //                    todo impl
@@ -91,7 +94,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
     @Override
     public BeerOrderDto getOrderById(UUID customerId, UUID orderId) {
-        return beerOrderMapper.beerOrderToDto(getOrder(customerId, orderId));
+        return beerOrderMapper.beerOrderToDtoExtended(getOrder(customerId, orderId));
     }
 
     @Override

@@ -64,6 +64,7 @@ public class BeerOrderController {
     @GetMapping("orders/{orderId}")
     public BeerOrderDto getOrder(@PathVariable("customerId") UUID customerId, @PathVariable("orderId") UUID orderId){
         return beerOrderService.getOrderById(customerId, orderId);
+
     }
 
     @PutMapping("/orders/{orderId}/pickup")

@@ -52,13 +52,19 @@ public class TastingRoomService {
     private void doPlaceOrder(Customer customer) {
         String beerToOrder = getRandomBeerUpc();
 
+
+
         BeerOrderLineDto beerOrderLine = BeerOrderLineDto.builder()
                 .upc(beerToOrder)
                 .orderQuantity(new Random().nextInt(6)) //todo externalize value to property
                 .build();
 
+
+
         List<BeerOrderLineDto> beerOrderLineSet = new ArrayList<>();
         beerOrderLineSet.add(beerOrderLine);
+
+
 
         BeerOrderDto beerOrder = BeerOrderDto.builder()
                 .customerId(customer.getId())
