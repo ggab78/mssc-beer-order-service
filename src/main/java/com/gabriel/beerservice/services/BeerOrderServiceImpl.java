@@ -18,7 +18,7 @@
 package com.gabriel.beerservice.services;
 
 import com.gabriel.beerservice.domain.BeerOrder;
-import com.gabriel.beerservice.domain.OrderStatusEnum;
+import com.gabriel.beerservice.domain.BeerOrderStatusEnum;
 import com.gabriel.beerservice.repositories.BeerOrderRepository;
 import com.gabriel.beerservice.repositories.CustomerRepository;
 import com.gabriel.beerservice.web.mappers.BeerOrderMapper;
@@ -79,7 +79,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
                     BeerOrder beerOrder = beerOrderMapper.dtoToBeerOrder(beerOrderDto);
                     beerOrder.setId(null); //should not be set by outside client
                     beerOrder.setCustomer(customer);
-                    beerOrder.setOrderStatus(OrderStatusEnum.NEW);
+                    beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
                     beerOrder.getBeerOrderLines().forEach(line -> {
                         System.out.println("line upc : "+line.getUpc());
                         line.setBeerOrder(beerOrder);});
@@ -100,7 +100,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
     @Override
     public void pickupOrder(UUID customerId, UUID orderId) {
         BeerOrder beerOrder = getOrder(customerId, orderId);
-        beerOrder.setOrderStatus(OrderStatusEnum.PICKED_UP);
+        beerOrder.setOrderStatus(BeerOrderStatusEnum.PICKED_UP);
 
         beerOrderRepository.save(beerOrder);
     }
