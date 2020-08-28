@@ -2,7 +2,7 @@ package com.gabriel.beerservice.web.mappers;
 
 import com.gabriel.beerservice.domain.BeerOrderLine;
 import com.gabriel.beerservice.services.beer.BeerService;
-import com.gabriel.beerservice.web.model.BeerOrderLineDto;
+import com.gabriel.model.BeerOrderLineDto;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;

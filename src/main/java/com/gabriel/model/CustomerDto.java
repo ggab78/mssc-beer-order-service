@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.gabriel.beerservice.web.model;
+package com.gabriel.model;
 
 import lombok.Builder;
 import lombok.Data;
@@ -28,18 +28,14 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class OrderStatusUpdate extends BaseItem {
+public class CustomerDto extends BaseItem {
 
     @Builder
-    public OrderStatusUpdate(UUID id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate,
-                             UUID orderId, String orderStatus, String customerRef) {
+    public CustomerDto(UUID id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, String name) {
         super(id, version, createdDate, lastModifiedDate);
-        this.orderId = orderId;
-        this.orderStatus = orderStatus;
-        this.customerRef = customerRef;
+        this.name = name;
     }
 
-    private UUID orderId;
-    private String customerRef;
-    private String orderStatus;
+    private String name;
+
 }

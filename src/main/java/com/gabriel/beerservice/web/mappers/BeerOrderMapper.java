@@ -18,7 +18,7 @@
 package com.gabriel.beerservice.web.mappers;
 
 import com.gabriel.beerservice.domain.BeerOrder;
-import com.gabriel.beerservice.web.model.BeerOrderDto;
+import com.gabriel.model.BeerOrderDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

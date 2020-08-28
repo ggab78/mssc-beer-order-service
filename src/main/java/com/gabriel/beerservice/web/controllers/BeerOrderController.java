@@ -18,8 +18,8 @@
 package com.gabriel.beerservice.web.controllers;
 
 import com.gabriel.beerservice.services.BeerOrderService;
-import com.gabriel.beerservice.web.model.BeerOrderDto;
-import com.gabriel.beerservice.web.model.BeerOrderPagedList;
+import com.gabriel.model.BeerOrderDto;
+import com.gabriel.model.BeerOrderPagedList;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

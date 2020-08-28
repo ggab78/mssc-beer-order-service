@@ -18,8 +18,8 @@
 package com.gabriel.beerservice.services;
 
 
-import com.gabriel.beerservice.web.model.BeerOrderDto;
-import com.gabriel.beerservice.web.model.BeerOrderPagedList;
+import com.gabriel.model.BeerOrderDto;
+import com.gabriel.model.BeerOrderPagedList;
 import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package com.gabriel.beerservice.web.mappers;
 
 import com.gabriel.beerservice.domain.BeerOrderLine;
-import com.gabriel.beerservice.web.model.BeerOrderLineDto;
+import com.gabriel.model.BeerOrderLineDto;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 

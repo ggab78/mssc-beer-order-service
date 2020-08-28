@@ -1,7 +1,7 @@
 package com.gabriel.beerservice.web.mappers;
 
 import com.gabriel.beerservice.domain.Customer;
-import com.gabriel.beerservice.web.model.CustomerDto;
+import com.gabriel.model.CustomerDto;
 import org.mapstruct.Mapper;
 
 @Mapper(uses = {DateMapper.class})
