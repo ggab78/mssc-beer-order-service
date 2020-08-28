@@ -1,9 +1,10 @@
-package com.gabriel.beerservice.services;
+package com.gabriel.beerservice.sm;
 
 import com.gabriel.beerservice.domain.BeerOrder;
 import com.gabriel.beerservice.domain.BeerOrderEventEnum;
 import com.gabriel.beerservice.domain.BeerOrderStatusEnum;
 import com.gabriel.beerservice.repositories.BeerOrderRepository;
+import com.gabriel.beerservice.services.BeerOrderManagerImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.statemachine.StateMachine;
@@ -24,13 +25,12 @@ public class BeerOrderStateChangeInterceptor extends StateMachineInterceptorAdap
     @Override
     public void preStateChange(State<BeerOrderStatusEnum, BeerOrderEventEnum> state, Message<BeerOrderEventEnum> message, Transition<BeerOrderStatusEnum, BeerOrderEventEnum> transition, StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> stateMachine) {
 
-        Optional.ofNullable(message).ifPresent(msg->{
-            Optional.ofNullable(UUID.class.cast(msg.getHeaders().getOrDefault(BeerOrderManagerImpl.BEER_ORDER_HEADER_ID,-1L)))
-                    .ifPresent(id->{
-                        BeerOrder beerOrder = beerOrderRepository.getOne(id);
-                        beerOrder.setOrderStatus(state.getId());
-                        beerOrderRepository.save(beerOrder);
-                    });
-        });
+        Optional.ofNullable(message)
+                .map(msg -> (String) msg.getHeaders().getOrDefault(BeerOrderManagerImpl.BEER_ORDER_HEADER_ID,""))
+                .ifPresent(id -> {
+                    BeerOrder beerOrder = beerOrderRepository.getOne(UUID.fromString(id));
+                    beerOrder.setOrderStatus(state.getId());
+                    beerOrderRepository.saveAndFlush(beerOrder);
+                });
     }
 }

@@ -4,6 +4,7 @@ import com.gabriel.beerservice.domain.BeerOrder;
 import com.gabriel.beerservice.domain.BeerOrderEventEnum;
 import com.gabriel.beerservice.domain.BeerOrderStatusEnum;
 import com.gabriel.beerservice.repositories.BeerOrderRepository;
+import com.gabriel.beerservice.sm.BeerOrderStateChangeInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -21,12 +22,12 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
     private final StateMachineFactory<BeerOrderStatusEnum, BeerOrderEventEnum> stateMachineFactory;
     private final BeerOrderRepository beerOrderRepository;
+    private final BeerOrderStateChangeInterceptor beerOrderStateChangeInterceptor;
+
 
     @Transactional
     @Override
     public BeerOrder newBeerOrder(BeerOrder beerOrder) {
-
-
 
         BeerOrder savedBeerOrder = beerOrderRepository.save(beerOrder);
         sendBeerOrderEvent(savedBeerOrder, BeerOrderEventEnum.VALIDATE_ORDER);
@@ -40,7 +41,8 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
         Message msg = MessageBuilder
                 .withPayload(eventEnum)
-                .setHeader(BEER_ORDER_HEADER_ID, beerOrder.getId()).build();
+                .setHeader(BEER_ORDER_HEADER_ID, beerOrder.getId().toString())
+                .build();
 
         sm.sendEvent(msg);
     }
@@ -52,7 +54,10 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         sm.stop();
 
         sm.getStateMachineAccessor()
-                .doWithAllRegions(sma->sma.resetStateMachine(new DefaultStateMachineContext<>(beerOrder.getOrderStatus(),null,null,null)));
+                .doWithAllRegions(sma-> {
+                    sma.addStateMachineInterceptor(beerOrderStateChangeInterceptor);
+                    sma.resetStateMachine(new DefaultStateMachineContext<>(beerOrder.getOrderStatus(), null, null, null));
+                });
 
         sm.start();
 
