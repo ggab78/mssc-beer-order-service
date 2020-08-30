@@ -12,6 +12,7 @@ public class JmsConfig {
 
     public static final String VALIDATE_BEER_ORDER = "validate-order";
     public static final String VALIDATE_BEER_ORDER_RESPONSE = "validate-order-response";
+    public static final String ALLOCATE_BEER_ORDER = "allocate-order";
 
     @Bean
     public MessageConverter jacksonJmsMessageConverter(ObjectMapper objectMapper) {
