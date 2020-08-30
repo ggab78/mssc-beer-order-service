@@ -11,6 +11,7 @@ import org.springframework.jms.support.converter.MessageType;
 public class JmsConfig {
 
     public static final String VALIDATE_BEER_ORDER = "validate-order";
+    public static final String VALIDATE_BEER_ORDER_RESPONSE = "validate-order-response";
 
     @Bean
     public MessageConverter jacksonJmsMessageConverter(ObjectMapper objectMapper) {
