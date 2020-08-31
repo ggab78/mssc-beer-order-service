@@ -5,6 +5,7 @@ import com.gabriel.beerservice.domain.BeerOrderEventEnum;
 import com.gabriel.beerservice.domain.BeerOrderStatusEnum;
 import com.gabriel.beerservice.repositories.BeerOrderRepository;
 import com.gabriel.beerservice.sm.BeerOrderStateChangeInterceptor;
+import com.gabriel.model.BeerOrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -47,6 +48,21 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
             allocateBeerOrder(beerOrderId);
         } else{
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_FAILED);
+        }
+        return beerOrder;
+    }
+
+    @Transactional
+    @Override
+    public BeerOrder processAllocationResult(BeerOrderDto beerOrderDto, Boolean isAllocated, Boolean isPending) {
+        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderDto.getId());
+
+        if(isAllocated){
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
+        } else if(isPending){
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
+        }else{
+            sendBeerOrderEvent(beerOrder,BeerOrderEventEnum.ALLOCATION_FAILED);
         }
         return beerOrder;
     }

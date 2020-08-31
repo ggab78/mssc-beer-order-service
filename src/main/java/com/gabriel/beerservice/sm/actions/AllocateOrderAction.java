@@ -36,5 +36,4 @@ private final BeerOrderMapper beerOrderMapper;
         log.debug("Send Allocation request to queue for orderId : " + headerId);
     }
 
-
 }
