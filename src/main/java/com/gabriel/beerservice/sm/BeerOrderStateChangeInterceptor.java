@@ -6,6 +6,7 @@ import com.gabriel.beerservice.domain.BeerOrderStatusEnum;
 import com.gabriel.beerservice.repositories.BeerOrderRepository;
 import com.gabriel.beerservice.services.BeerOrderManagerImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.state.State;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
-
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class BeerOrderStateChangeInterceptor extends StateMachineInterceptorAdapter<BeerOrderStatusEnum, BeerOrderEventEnum> {
@@ -25,6 +26,7 @@ public class BeerOrderStateChangeInterceptor extends StateMachineInterceptorAdap
     @Override
     public void preStateChange(State<BeerOrderStatusEnum, BeerOrderEventEnum> state, Message<BeerOrderEventEnum> message, Transition<BeerOrderStatusEnum, BeerOrderEventEnum> transition, StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> stateMachine) {
 
+        log.debug("SM Interceptor received message to set order status to" + state.getId().name());
         Optional.ofNullable(message)
                 .map(msg -> (String) msg.getHeaders().getOrDefault(BeerOrderManagerImpl.BEER_ORDER_HEADER_ID,""))
                 .ifPresent(id -> {

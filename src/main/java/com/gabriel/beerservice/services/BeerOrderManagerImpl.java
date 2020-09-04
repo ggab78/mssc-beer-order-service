@@ -7,6 +7,7 @@ import com.gabriel.beerservice.repositories.BeerOrderRepository;
 import com.gabriel.beerservice.sm.BeerOrderStateChangeInterceptor;
 import com.gabriel.model.BeerOrderDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
@@ -15,8 +16,10 @@ import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BeerOrderManagerImpl implements BeerOrderManager {
@@ -95,6 +98,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
     private void sendBeerOrderEvent(BeerOrder beerOrder, BeerOrderEventEnum eventEnum) {
 
+        log.debug("Sending beer order event : "+eventEnum.name());
         StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = build(beerOrder);
 
         Message msg = MessageBuilder
@@ -106,7 +110,13 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
     private StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> build(BeerOrder beerOrder){
 
-        StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = stateMachineFactory.getStateMachine(beerOrder.getId());
+        StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm =
+                Optional.ofNullable(stateMachineFactory.getStateMachine(beerOrder.getId()))
+                .orElseGet(()->{
+                    log.debug("Creating Steate Machine with no Id");
+                    return stateMachineFactory.getStateMachine();
+                });
+
 
         sm.stop();
 
@@ -116,6 +126,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                     sma.resetStateMachine(new DefaultStateMachineContext<>(beerOrder.getOrderStatus(), null, null, null));
                 });
 
+        //log.debug("Rehydrating SM for beerOrderId "+beerOrder.getId() +"with state "+sm.getState().getId().name());
         sm.start();
 
         return sm;

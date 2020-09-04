@@ -1,6 +1,6 @@
 package com.gabriel.beerservice.services.beer;
 
-import com.gabriel.beerservice.services.beer.model.BeerDto;
+import com.gabriel.model.BeerDto;
 
 import java.util.Optional;
 
