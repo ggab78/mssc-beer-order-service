@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class AllocateBeerOrderResult {
 
     private BeerOrderDto beerOrderDto;
-    private Boolean isAllocated;
-    private Boolean isPending;
+    private Boolean allocationError=false;
+    private Boolean pendingInventory=false;
 
 }

@@ -9,7 +9,6 @@ public interface BeerOrderManager {
 
     BeerOrder newBeerOrder(BeerOrder beerOrder);
     public BeerOrder processValidationResult(UUID beerOrderId, Boolean isValid);
-    public BeerOrder processAllocationResult(BeerOrderDto beerOrderDto, Boolean isAllocated, Boolean isPending);
-
+    public BeerOrder processAllocationResult(BeerOrderDto beerOrderDto, Boolean allocationError, Boolean pendingInventory);
 
 }
