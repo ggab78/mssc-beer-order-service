@@ -45,7 +45,10 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     @Override
     public BeerOrder processValidationResult(UUID beerOrderId, Boolean isValid) {
 
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
+
+        log.debug("Process Validation Result");
+
+        BeerOrder beerOrder = beerOrderRepository.findById(beerOrderId).get();
         if(isValid){
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_PASSED);
             allocateBeerOrder(beerOrderId);
@@ -58,7 +61,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     @Transactional
     @Override
     public BeerOrder processAllocationResult(BeerOrderDto beerOrderDto, Boolean allocationError, Boolean pendingInventory) {
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderDto.getId());
+        BeerOrder beerOrder = beerOrderRepository.findById(beerOrderDto.getId()).get();
 
         if(allocationError){
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_FAILED);
@@ -68,6 +71,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                 updateAllocatedQty(beerOrderDto);
             }else{
                 sendBeerOrderEvent(beerOrder,BeerOrderEventEnum.ALLOCATION_SUCCESS);
+                log.debug("BeerOrder state"+ beerOrder.getOrderStatus());
             }
         }
         return beerOrder;
@@ -75,7 +79,8 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
 
     private void updateAllocatedQty(BeerOrderDto beerOrderDto){
-        BeerOrder allocatedBeerOrder = beerOrderRepository.getOne(beerOrderDto.getId());
+
+        BeerOrder allocatedBeerOrder = beerOrderRepository.findById(beerOrderDto.getId()).get();
 
         allocatedBeerOrder.getBeerOrderLines().forEach(line->{
             beerOrderDto.getBeerOrderLines().forEach(lineDto->{
@@ -90,10 +95,11 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
 
     private BeerOrder allocateBeerOrder(UUID beerOrderId) {
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
+        BeerOrder beerOrder = beerOrderRepository.findById(beerOrderId).get();
         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATE_ORDER);
         return beerOrder;
     }
+
 
 
     private void sendBeerOrderEvent(BeerOrder beerOrder, BeerOrderEventEnum eventEnum) {
