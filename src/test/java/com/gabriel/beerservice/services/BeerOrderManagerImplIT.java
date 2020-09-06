@@ -100,6 +100,31 @@ public class BeerOrderManagerImplIT {
 
     }
 
+
+    @Test
+    void testNewToPickedUp() throws JsonProcessingException, InterruptedException {
+
+        BeerDto beerDto=BeerDto.builder().id(beerId).upc(upc).build();
+
+        wireMockServer.stubFor(get(BeerServiceImpl.PATH+beerDto.getUpc()).willReturn(okJson(objectMapper.writeValueAsString(Optional.of(beerDto)))));
+
+        BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(createBeerOrder());
+
+        await().untilAsserted(()->{
+            BeerOrder order = beerOrderRepository.findById(savedBeerOrder.getId()).get();
+            order.getBeerOrderLines().forEach(l->assertEquals(l.getOrderQuantity(), l.getQuantityAllocated()));
+            assertEquals(BeerOrderStatusEnum.ALLOCATED, order.getOrderStatus());
+        });
+
+        beerOrderManager.pickUpBeerOrder(savedBeerOrder.getId());
+
+        BeerOrder beerOrder = beerOrderRepository.findById(savedBeerOrder.getId()).get();
+
+        assertEquals(BeerOrderStatusEnum.PICKED_UP, beerOrder.getOrderStatus());
+
+
+    }
+
     private BeerOrder createBeerOrder() {
         BeerOrder beerOrder = BeerOrder.builder()
                 .customer(testCustomer)
