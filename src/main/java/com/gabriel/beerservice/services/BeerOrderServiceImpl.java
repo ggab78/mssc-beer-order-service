@@ -44,6 +44,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
     private final BeerOrderRepository beerOrderRepository;
     private final CustomerRepository customerRepository;
     private final BeerOrderMapper beerOrderMapper;
+    private final BeerOrderManager beerOrderManager;
 
 
     @Override
@@ -82,10 +83,10 @@ public class BeerOrderServiceImpl implements BeerOrderService {
                     beerOrder.getBeerOrderLines().forEach(line -> {
                         System.out.println("line upc : "+line.getUpc());
                         line.setBeerOrder(beerOrder);});
-                    BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
+                    BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+
                     log.debug("Saved Beer Order: " + savedBeerOrder.getId());
-//                    todo impl
-//                    publisher.publishEvent(new NewBeerOrderEvent(savedBeerOrder));
+//
                     return beerOrderMapper.beerOrderToDto(savedBeerOrder);
                 })
                 .orElseThrow(RuntimeException::new);
@@ -97,11 +98,8 @@ public class BeerOrderServiceImpl implements BeerOrderService {
     }
 
     @Override
-    public void pickupOrder(UUID customerId, UUID orderId) {
-        BeerOrder beerOrder = getOrder(customerId, orderId);
-        beerOrder.setOrderStatus(BeerOrderStatusEnum.PICKED_UP);
-
-        beerOrderRepository.save(beerOrder);
+    public void pickupOrder(UUID orderId) {
+       beerOrderManager.pickUpBeerOrder(orderId);
     }
 
     private BeerOrder getOrder(UUID customerId, UUID orderId) {
