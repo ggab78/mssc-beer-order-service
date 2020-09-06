@@ -86,6 +86,8 @@ public class BeerOrderManagerImplIT {
 
         await().untilAsserted(()->{
             BeerOrder order = beerOrderRepository.findById(savedBeerOrder.getId()).get();
+            order.getBeerOrderLines().forEach(l->assertEquals(l.getOrderQuantity(), l.getQuantityAllocated()));
+
             assertEquals(BeerOrderStatusEnum.ALLOCATED, order.getOrderStatus());
         });
 
@@ -94,6 +96,8 @@ public class BeerOrderManagerImplIT {
         assertNotNull(beerOrder);
 
         assertEquals(BeerOrderStatusEnum.ALLOCATED, beerOrder.getOrderStatus());
+        beerOrder.getBeerOrderLines().forEach(l->assertEquals(l.getOrderQuantity(), l.getQuantityAllocated()));
+
     }
 
     private BeerOrder createBeerOrder() {

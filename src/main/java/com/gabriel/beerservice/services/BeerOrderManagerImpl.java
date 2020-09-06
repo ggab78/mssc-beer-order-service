@@ -72,6 +72,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
             }else{
                 sendBeerOrderEvent(beerOrder,BeerOrderEventEnum.ALLOCATION_SUCCESS);
                 log.debug("BeerOrder state"+ beerOrder.getOrderStatus());
+                updateAllocatedQty(beerOrderDto);
             }
         }
         return beerOrder;

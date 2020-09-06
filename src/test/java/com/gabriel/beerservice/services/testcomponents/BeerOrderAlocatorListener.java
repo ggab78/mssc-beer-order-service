@@ -1,6 +1,7 @@
 package com.gabriel.beerservice.services.testcomponents;
 
 import com.gabriel.beerservice.config.JmsConfig;
+import com.gabriel.model.BeerOrderDto;
 import com.gabriel.model.events.AllocateBeerOrderRequest;
 import com.gabriel.model.events.AllocateBeerOrderResult;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,16 @@ public class BeerOrderAlocatorListener {
 
         AllocateBeerOrderRequest request = (AllocateBeerOrderRequest) msg.getPayload();
 
+        BeerOrderDto beerOrderDto=request.getBeerOrderDto();
+
+        beerOrderDto.getBeerOrderLines().forEach(l->{
+            l.setQuantityAllocated(l.getOrderQuantity());
+        });
+
         jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_BEER_ORDER_RESPONSE, AllocateBeerOrderResult.builder()
                 .allocationError(false)
                 .pendingInventory(false)
-                .beerOrderDto(request.getBeerOrderDto())
+                .beerOrderDto(beerOrderDto)
                 .build());
     }
 

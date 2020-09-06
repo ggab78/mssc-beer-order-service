@@ -32,7 +32,8 @@ private final BeerOrderMapper beerOrderMapper;
 
         String headerId = (String) stateContext.getMessageHeaders().getOrDefault(BeerOrderManagerImpl.BEER_ORDER_HEADER_ID, "");
         BeerOrder beerOrder = beerOrderRepository.findById(UUID.fromString(headerId)).get();
-        jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_BEER_ORDER, new AllocateBeerOrderRequest(beerOrderMapper.beerOrderToDto(beerOrder)));
+        jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_BEER_ORDER,
+                new AllocateBeerOrderRequest(beerOrderMapper.beerOrderToDto(beerOrder)));
         log.debug("Send Allocation request to queue for orderId : " + headerId);
     }
 
