@@ -11,6 +11,8 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -25,8 +27,16 @@ public class BeerOrderValidatorListener {
 
         ValidateBeerOrderRequest request = (ValidateBeerOrderRequest) msg.getPayload();
 
+        boolean isValid=Optional.ofNullable(request.getBeerOrderDto().getCustomerRef()).map(s->{
+            if(s.equals("fail-validation")){
+                return false;
+            }
+            return true;
+        }).orElseGet(()->true);
+
+
         jmsTemplate.convertAndSend(JmsConfig.VALIDATE_BEER_ORDER_RESPONSE, ValidateBeerOrderResult.builder()
-                .isValid(true)
+                .isValid(isValid)
                 .orderId(request.getBeerOrderDto().getId())
                 .build());
     }
