@@ -11,6 +11,8 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -28,13 +30,38 @@ public class BeerOrderAlocatorListener {
 
         BeerOrderDto beerOrderDto=request.getBeerOrderDto();
 
+
+
+
+        boolean isError= Optional.ofNullable(request.getBeerOrderDto().getCustomerRef()).map(s->{
+            if(s.equals("fail-allocation")){
+                return true;
+            }
+            return false;
+        }).orElseGet(()->false);
+
+        boolean isPending= Optional.ofNullable(request.getBeerOrderDto().getCustomerRef()).map(s->{
+            if(s.equals("pending")){
+                return true;
+            }
+            return false;
+        }).orElseGet(()->false);
+
+
         beerOrderDto.getBeerOrderLines().forEach(l->{
-            l.setQuantityAllocated(l.getOrderQuantity());
+
+            if(isPending){
+                l.setQuantityAllocated(l.getOrderQuantity()-1);
+            }else{
+                l.setQuantityAllocated(l.getOrderQuantity());
+            }
+
         });
 
+
         jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_BEER_ORDER_RESPONSE, AllocateBeerOrderResult.builder()
-                .allocationError(false)
-                .pendingInventory(false)
+                .allocationError(isError)
+                .pendingInventory(isPending)
                 .beerOrderDto(beerOrderDto)
                 .build());
     }
