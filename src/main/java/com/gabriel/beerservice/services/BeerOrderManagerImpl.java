@@ -93,6 +93,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
             }else{
                 sendBeerOrderEvent(beerOrder,BeerOrderEventEnum.ALLOCATION_SUCCESS);
                 log.debug("BeerOrder state"+ beerOrder.getOrderStatus());
+                //todo await for db to update beerOrderstatus to allocated
                 updateAllocatedQty(beerOrderDto);
             }
         }
