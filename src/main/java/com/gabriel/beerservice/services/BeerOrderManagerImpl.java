@@ -51,6 +51,16 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                 ,()->log.error("beer order not found"+id));
     }
 
+    @Transactional
+    @Override
+    public void cancelBeerOrder(UUID id) {
+
+        Optional<BeerOrder> orderOptional = beerOrderRepository.findById(id);
+
+        orderOptional.ifPresentOrElse(o-> sendBeerOrderEvent(o, BeerOrderEventEnum.CANCEL_ORDER)
+                ,()->log.error("beer order not found"+id));
+    }
+
 
     @Transactional
     @Override
@@ -131,7 +141,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm =
                 Optional.ofNullable(stateMachineFactory.getStateMachine(beerOrder.getId()))
                 .orElseGet(()->{
-                    log.debug("Creating Steate Machine with no Id");
+                    log.debug("Creating State Machine with no Id");
                     return stateMachineFactory.getStateMachine();
                 });
 

@@ -11,4 +11,5 @@ public interface BeerOrderManager {
     public BeerOrder processValidationResult(UUID beerOrderId, Boolean isValid);
     public BeerOrder processAllocationResult(BeerOrderDto beerOrderDto, Boolean allocationError, Boolean pendingInventory);
     public void pickUpBeerOrder(UUID id);
+    public void cancelBeerOrder(UUID id);
 }

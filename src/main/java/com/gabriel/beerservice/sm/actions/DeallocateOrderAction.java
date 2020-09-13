@@ -20,7 +20,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DealocateOrderAction implements Action<BeerOrderStatusEnum, BeerOrderEventEnum> {
+public class DeallocateOrderAction implements Action<BeerOrderStatusEnum, BeerOrderEventEnum> {
 
     private final JmsTemplate jmsTemplate;
     private final BeerOrderRepository beerOrderRepository;

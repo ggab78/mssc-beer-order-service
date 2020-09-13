@@ -30,9 +30,6 @@ public class BeerOrderAlocatorListener {
 
         BeerOrderDto beerOrderDto=request.getBeerOrderDto();
 
-
-
-
         boolean isError= Optional.ofNullable(request.getBeerOrderDto().getCustomerRef()).map(s->{
             if(s.equals("fail-allocation")){
                 return true;
